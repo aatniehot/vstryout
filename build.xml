@@ -1,0 +1,53 @@
+<?xml version = "1.0"?>
+<project name = "Sofa Rollout" default = "info">
+<property file = "build.properties"/>
+<property name = "vstryout.dir" value = "vstryout"/>
+
+
+   <target name = "info">
+      <echo>Sofa Rollout ${buildversion} with ANT</echo>
+   </target>
+	
+   <target name = "git_init" description = "initializing git"> 
+      <exec executable = "git" >
+		<arg line = "init" />
+	  </exec>		
+   </target>
+
+   <target name = "git_clone"  depends = "git_init" description = "getting installer files from git"> 
+      <exec executable = "git" >
+		<arg line = "clone https://github.com/aatniehot/vstryout.git" />
+	  </exec>		
+   </target>
+
+<target name = "mysql_pv"  depends = ""> 
+      <exec executable = "kubectl" >
+		<arg line = "apply -f ./vstryout/mysql/mysql-pv.yaml" />
+	  </exec>		
+   </target>
+   
+   <target name = "mysql_deployment"  depends = "mysql_pv"> 
+      <exec executable = "kubectl" >
+		<arg line = "apply -f ./vstryout/mysql/mysql-deployment.yaml" />
+	  </exec>		
+   </target>
+   
+   <target name = "sofa_deployment"  depends = ""> 
+      <exec executable = "kubectl" >
+		<arg line = "run sofa --image=docker.io/aniehot/sofa --port=8080" />
+	  </exec>
+	  <exec executable = "kubectl" >
+	    <arg line = "expose deployment sofa --type=LoadBalancer --port=8080 --target-port=8080" />
+	  </exec>
+   </target>
+   
+   
+	<target name = "remove_git_maps" description = "removing installation files" > 
+	<delete dir = "${vstryout.dir}"/>
+   </target>
+
+	<target name = "install" description = "going through all installation steps" depends = "git_clone, mysql_deployment, sofa_deployment, remove_git_maps" >
+	  <echo> Build completed for sofa containers </echo>
+	</target> 
+
+</project>
