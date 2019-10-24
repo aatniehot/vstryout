@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sofa
+  labels:
+    app: sofa
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sofa
+  template:
+    metadata:
+      labels:
+        app: sofa
+    spec:
+      containers:
+      - name: sofa
+        image: docker.io/aniehot/sofa:1.0
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
