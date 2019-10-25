@@ -13,15 +13,14 @@ spec:
     app: mysql
 ---
 apiVersion: apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
 spec:
   selector:
     matchLabels:
       app: mysql
-  strategy:
-    type: Recreate
+  serviceName: "sofa"
   template:
     metadata:
       labels:
