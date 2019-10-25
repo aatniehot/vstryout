@@ -42,13 +42,13 @@
 	  </exec>		
    </target>
 
-<!--   
+  
       <target name = "mysql"  depends = ""> 
       <exec dir="./sofa" executable = "kubectl" >
 		<arg line = "exec mysql-0 -- mysql -u root -p1234 exec &lt; sofa.sql" />
 	  </exec>		
    </target>
-  --> 
+ 
 
 <target name = "mysql_pv"  depends = ""> 
       <exec executable = "kubectl" >
@@ -94,7 +94,7 @@
 		<arg line = "delete service mysql" />
 	  </exec>
 	  <exec executable = "kubectl" >
-	    <arg line = "delete deployment mysql" />
+	    <arg line = "delete statefulsets --all" />
 	  </exec>
    </target>
    
