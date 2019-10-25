@@ -41,8 +41,14 @@
 		<arg line = "build -t sofa ." />
 	  </exec>		
    </target>
-   
-   
+
+<!--   
+      <target name = "mysql"  depends = ""> 
+      <exec dir="./sofa" executable = "kubectl" >
+		<arg line = "exec mysql-0 -- mysql -u root -p1234 exec &lt; sofa.sql" />
+	  </exec>		
+   </target>
+  --> 
 
 <target name = "mysql_pv"  depends = ""> 
       <exec executable = "kubectl" >
@@ -61,10 +67,10 @@
    
    <target name = "sofa_deployment"  depends = ""> 
       <exec executable = "kubectl" >
-		<arg line = "run sofa --image=sofa --port=8080" />
+		<arg line = "apply -f ./vstryout/sofa/sofa.yaml" />
 	  </exec>
 	  <exec executable = "kubectl" >
-	    <arg line = "expose deployment sofa --type=LoadBalancer --port=8080 --target-port=8080" />
+	    <arg line = "apply -f ./vstryout/sofa/sofa-service.yaml" />
 	  </exec>
    </target>
    
@@ -73,9 +79,31 @@
 	<delete dir = "${vstryout.dir}"/>
 	<delete dir = "${sofa.dir}"/>
    </target>
+   
+   <target name = "remove_sofa" description = "removing sofa containers" > 
+	  <exec executable = "kubectl" >
+		<arg line = "delete service sofa-service" />
+	  </exec>
+	  <exec executable = "kubectl" >
+	    <arg line = "delete deployment sofa" />
+	  </exec>
+   </target>
+   
+   <target name = "remove_mysql" description = "removing mysql containers" > 
+	  <exec executable = "kubectl" >
+		<arg line = "delete service mysql" />
+	  </exec>
+	  <exec executable = "kubectl" >
+	    <arg line = "delete deployment mysql" />
+	  </exec>
+   </target>
+   
 
 	<target name = "install" description = "going through all installation steps" depends = "sofa_git, containerizing_sofa, mysql_deployment, sofa_deployment, remove_git_maps" >
 	  <echo> Build completed for sofa containers </echo>
 	</target> 
 
+    <target name = "remove" description = "going through all removal steps" depends = "remove_sofa, remove_mysql" >
+	  <echo> Removal completed for sofa containers </echo>
+	</target> 
 </project>
