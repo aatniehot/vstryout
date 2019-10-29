@@ -17,6 +17,5 @@ spec:
       containers:
       - name: sofa
         image: docker.io/aniehot/sofa:1.0
-        imagePullPolicy: Never
         ports:
         - containerPort: 8080
