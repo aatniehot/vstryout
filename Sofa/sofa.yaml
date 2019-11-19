@@ -16,5 +16,5 @@ spec:
     spec:
       containers:
       - name: sofa
-        image: docker.io/sofa:latest
+        image: docker.io/sofa
         - containerPort: 8080
